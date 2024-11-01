@@ -1,5 +1,22 @@
 # Chrome Extesnsion
 
+## 公式
+
+https://developer.chrome.com/docs/extensions?hl=ja
+
+[ブラウザの制御や web サイトの管理方法、基本コンセプトなど](https://developer.chrome.com/docs/extensions/develop?hl=ja)
+
+## Service Worker
+
+MV2 までは background script と呼ばれていたものは、今後（MV3）は`service worker`と呼ばれるように。
+
+#### いつ unload されるの？
+
+https://developer.chrome.com/docs/extensions/develop/concepts/service-workers/lifecycle?hl=ja#idle-shutdown
+
+概ね idle 状態になってから 30 秒経過したらという認識でいいのかと
+
+
 ## TypeScript + ESM + React + Webpack で開発するときの最小構成
 
 最終的にバンドル後の生成物がそのまま拡張機能のパッケージとなるようにする
@@ -214,4 +231,44 @@ chrome.runtime.onMessage.addListener((
 ) => {
     console.log('[chrome.runtime.onMessage]' + message);
 });
+```
+
+## API
+
+## [API] chrome.storage
+
+ストレージに変更が加わると発生するイベントがある。
+
+そのためサブスクライバへ通知するにはこれを利用すると良さそう
+
+ならば、background.ts の state の更新は background.ts がこれまで通り実施するとして
+
+onChange1 イベントリスナで各コンポーネントへ変更の message をそうしんすればいいかも
+
+
+## [API] chrome.tabs.onUpload
+
+タブが更新されたら発火する
+
+わかっていること：
+
+- filterが使えないため手動で余計なリロードに反応しないように制御しなくてはならない
+
+
+
+```JavaScript
+const state: iModel = {
+    isCaptureSubtitleInjected: false,
+    isContentScriptInjected: false,
+    isControllerInjected: false,
+    isEnglish: false,
+    isExTranscriptStructured: false,
+    isSubtitleCaptured: false,
+    isSubtitleCapturing: false,
+    isTranscriptDisplaying: false,
+    subtitles: null,
+    tabId: null,
+    tabInfo: null,
+    url: null,
+}
 ```
